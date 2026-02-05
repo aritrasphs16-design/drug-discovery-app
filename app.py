@@ -103,16 +103,23 @@ def analyze_compounds(smiles_list):
             })
     return results
 
-if input_text:
-    data = analyze_compounds(input_text.split(","))
-    
-    # 5. Leaderboard
-    # 5. Leaderboard with Safety Check
+# --- RUN DIAGNOSTICS ---
+df = pd.DataFrame() # ADD THIS: Initialize df so Line 113 doesn't crash
+
+if smiles_to_process:
+    data = analyze_compounds(smiles_to_process)
+    if data:
+        # Create the dataframe here
+        df = pd.DataFrame(data).drop(columns=["Mol", "tpsa", "logp_val", "v_list", "v_count", "Tests", "Organic"], errors='ignore')
+
+# 5. Leaderboard (This is Line 113 in your screenshot)
 st.subheader("📊 Compound Diagnostic Leaderboard")
 
-if not df.empty:
-    # Only apply gradient if "Sim" column is present to avoid KeyError
+if not df.empty: # This line will now work because df is defined above
     if "Sim" in df.columns:
+        st.dataframe(df.style.background_gradient(cmap="Blues", subset=["Sim"]), use_container_width=True)
+    else:
+        st.dataframe(df, use_container_width=True)
         st.dataframe(df.style.background_gradient(cmap="Blues", subset=["Sim"]), use_container_width=True)
     else:
         st.dataframe(df, use_container_width=True)
