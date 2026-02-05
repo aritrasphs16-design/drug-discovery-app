@@ -107,7 +107,17 @@ if input_text:
     data = analyze_compounds(input_text.split(","))
     
     # 5. Leaderboard
-    st.subheader("📊 Compound Diagnostic Leaderboard")
+    # 5. Leaderboard with Safety Check
+st.subheader("📊 Compound Diagnostic Leaderboard")
+
+if not df.empty:
+    # Only apply gradient if "Sim" column is present to avoid KeyError
+    if "Sim" in df.columns:
+        st.dataframe(df.style.background_gradient(cmap="Blues", subset=["Sim"]), use_container_width=True)
+    else:
+        st.dataframe(df, use_container_width=True)
+else:
+    st.warning("No valid molecular data found to display.")
     df = pd.DataFrame(data).drop(columns=["Mol", "tpsa", "logp_val", "v_list", "v_count", "Tests", "Organic"], errors='ignore')
     st.dataframe(df.style.background_gradient(cmap="Blues", subset=["Sim"]), use_container_width=True)
 
