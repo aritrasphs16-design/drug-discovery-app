@@ -103,29 +103,12 @@ def analyze_compounds(smiles_list):
             })
     return results
 
-# --- RUN DIAGNOSTICS ---
-df = pd.DataFrame() # ADD THIS: Initialize df so Line 113 doesn't crash
-
-if smiles_to_process:
-    data = analyze_compounds(smiles_to_process)
-    if data:
-        # Create the dataframe here
-        df = pd.DataFrame(data).drop(columns=["Mol", "tpsa", "logp_val", "v_list", "v_count", "Tests", "Organic"], errors='ignore')
-
-# 5. Leaderboard (This is Line 113 in your screenshot)
-st.subheader("📊 Compound Diagnostic Leaderboard")
-
-if not df.empty: # This line will now work because df is defined above
-    if "Sim" in df.columns:
-        st.dataframe(df.style.background_gradient(cmap="Blues", subset=["Sim"]), use_container_width=True)
-    else:
-        st.dataframe(df, use_container_width=True)
-        st.dataframe(df.style.background_gradient(cmap="Blues", subset=["Sim"]), use_container_width=True)
-    else:
-        st.dataframe(df, use_container_width=True)
-else:
-    st.warning("No valid molecular data found to display.")
-    df = pd.DataFrame(data).drop(columns=["Mol", "tpsa", "logp_val", "v_list", "v_count", "Tests", "Organic"], errors='ignore')
+if input_text:
+    data = analyze_compounds(input_text.split(","))
+    
+    # 5. Leaderboard
+    st.subheader("📊 Compound Diagnostic Leaderboard")
+    df = pd.DataFrame(data).drop(columns=["Mol", "tpsa", "logp_val", "v_list", "v_count", "Tests", "Organic"])
     st.dataframe(df.style.background_gradient(cmap="Blues", subset=["Sim"]), use_container_width=True)
 
     # 6. Molecular Architecture & Diagnostics
@@ -175,4 +158,5 @@ else:
         ))
     fig.update_layout(xaxis_title="tPSA (Polarity)", yaxis_title="WLOGP (Lipophilicity)", template="plotly_dark", height=600)
     st.plotly_chart(fig, use_container_width=True)
+
 
