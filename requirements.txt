@@ -3,3 +3,4 @@ rdkit
 plotly
 pandas
 pillow
+matplotlib
