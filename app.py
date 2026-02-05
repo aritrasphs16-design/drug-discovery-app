@@ -108,7 +108,7 @@ if input_text:
     
     # 5. Leaderboard
     st.subheader("📊 Compound Diagnostic Leaderboard")
-    df = pd.DataFrame(data).drop(columns=["Mol", "tpsa", "logp_val", "v_list", "v_count", "Tests", "Organic"])
+    df = pd.DataFrame(data).drop(columns=["Mol", "tpsa", "logp_val", "v_list", "v_count", "Tests", "Organic"], errors='ignore')
     st.dataframe(df.style.background_gradient(cmap="Blues", subset=["Sim"]), use_container_width=True)
 
     # 6. Molecular Architecture & Diagnostics
